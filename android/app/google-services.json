@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "804557415821",
+    "project_id": "chicken-fried-e-commerce",
+    "storage_bucket": "chicken-fried-e-commerce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804557415821:android:be1668857741364bbf89c4",
+        "android_client_info": {
+          "package_name": "com.adnanturgay.users_food_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "804557415821-fnj1sqh7inovjhi6tot0c57r5sdb7lnu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNIyWUkvrtkbQLeWXYwMtaulMim5zhIDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "804557415821-fnj1sqh7inovjhi6tot0c57r5sdb7lnu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "804557415821-qv2qla6cfqfa420dtrf54lv79o9bknbh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.adnanturgay.usersapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
