@@ -22,6 +22,11 @@ class SaveAddressScreen extends StatelessWidget {
 
   getUserLocationAddress() async {
     //get current location
+    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    
+    await Geolocator.checkPermission();
+    await Geolocator.requestPermission();
+    
     Position newPosition = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );

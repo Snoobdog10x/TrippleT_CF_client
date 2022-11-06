@@ -31,8 +31,8 @@ class _PlacedOrderScreenState extends State<PlacedOrderScreen> {
       "paymentDetails": "Cash on Delivery",
       "orderTime": orderId,
       "isSuccess": true,
-      "sellerUID": widget.sellerUID,
-      "riderUID": "",
+      // "sellerUID": widget.sellerUID,
+      // "riderUID": "",
       "status": "normal",
       "orderId": orderId,
     });
@@ -45,8 +45,8 @@ class _PlacedOrderScreenState extends State<PlacedOrderScreen> {
       "paymentDetails": "Cash on Delivery",
       "orderTime": orderId,
       "isSuccess": true,
-      "sellerUID": widget.sellerUID,
-      "riderUID": "",
+      // "sellerUID": widget.sellerUID,
+      // "riderUID": "",
       "status": "normal",
       "orderId": orderId,
     }).whenComplete(() {
