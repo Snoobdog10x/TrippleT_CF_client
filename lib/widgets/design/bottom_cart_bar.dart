@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class BottomCartBar extends StatefulWidget {
   const BottomCartBar({Key? key}) : super(key: key);
@@ -8,9 +8,15 @@ class BottomCartBar extends StatefulWidget {
 }
 
 class _BottomCartBar extends State<BottomCartBar> {
+  Map<String, double> itemscard = {
+    "Flutter": 5,
+    "React": 3,
+    "Xamarin": 2,
+    "Ionic": 2,
+  };
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Container();
   }
 }

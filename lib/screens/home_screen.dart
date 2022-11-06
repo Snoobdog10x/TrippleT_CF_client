@@ -7,6 +7,7 @@ import 'package:users_food_app/assistantMethods/assistant_methods.dart';
 import 'package:users_food_app/widgets/items_avatar_carousel.dart';
 import 'package:users_food_app/widgets/my_drawer.dart';
 import 'package:users_food_app/widgets/progress_bar.dart';
+import 'package:users_food_app/widgets/design/bottom_cart_bar.dart';
 
 import '../authentication/login.dart';
 import '../models/sellers.dart';
@@ -34,140 +35,36 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MyDrawer(),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: FractionalOffset(-2.0, 0.0),
-            end: FractionalOffset(5.0, -1.0),
-            colors: [
-              Color(0xFFFFFFFF),
-              Color(0xFFFAC898),
-            ],
-          ),
-        ),
-        child: CustomScrollView(
-          slivers: [
-            //appbar
-            SliverAppBar(
-              elevation: 1,
-              pinned: true,
-              backgroundColor: const Color(0xFFFAC898),
-              foregroundColor: Colors.black,
-              expandedHeight: 50,
-              flexibleSpace: Container(
+      appBar: AppBar(
+        title: Text("Menu"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: GestureDetector(
+              child: Container(
+                padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: FractionalOffset(-1.0, 0.0),
-                    end: FractionalOffset(4.0, -1.0),
-                    colors: [
-                      Color(0xFFFFFFFF),
-                      Color(0xFFFAC898),
-                    ],
-                  ),
+                  shape: BoxShape.circle,
+                  color: Colors.amber,
                 ),
-                child: FlexibleSpaceBar(
-                  title: Text(
-                    'Menu',
-                    style: GoogleFonts.lato(
-                      textStyle: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                  ),
-                  centerTitle: false,
-                ),
+                child: const Icon(Icons.exit_to_app),
               ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: GestureDetector(
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.amber,
-                      ),
-                      child: const Icon(Icons.exit_to_app),
+              onTap: () {
+                firebaseAuth.signOut().then((value) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (c) => const LoginScreen(),
                     ),
-                    onTap: () {
-                      firebaseAuth.signOut().then((value) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (c) => const LoginScreen(),
-                          ),
-                        );
-                        _controller.clear();
-                      });
-                    },
-                  ),
-                ),
-              ],
+                  );
+                  _controller.clear();
+                });
+              },
             ),
-            //Carausel
-            // SliverToBoxAdapter(
-            //   child: Container(
-            //     child: UserInformation(),
-            //   ),
-            // ),
-
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: SizedBox(
-                  //taking %20 height for the device
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  //taking max width for the device
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      Expanded(
-                        child: ItemsAvatarCarousel(),
-                      ),
-                      // Expanded(
-                      //   child: SellerCarouselWidget(),
-                      // )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // StreamBuilder<QuerySnapshot>(
-            //   stream:
-            //       FirebaseFirestore.instance.collection("sellers").snapshots(),
-            //   builder: (context, snapshot) {
-            //     return !snapshot.hasData
-            //         ? SliverToBoxAdapter(
-            //             child: Center(
-            //               child: circularProgress(),
-            //             ),
-            //           )
-            //         : SliverStaggeredGrid.countBuilder(
-            //             staggeredTileBuilder: (c) => const StaggeredTile.fit(1),
-            //             crossAxisCount: 1,
-            //             mainAxisSpacing: 1,
-            //             crossAxisSpacing: 1,
-            //             itemBuilder: (context, index) {
-            //               Sellers smodel = Sellers.fromJson(
-            //                   snapshot.data!.docs[index].data()!
-            //                       as Map<String, dynamic>);
-            //               return Padding(
-            //                 padding: const EdgeInsets.all(8),
-            //                 child: SellersDesignWidget(
-            //                   model: smodel,
-            //                   context: context,
-            //                 ),
-            //               );
-            //             },
-            //             itemCount: snapshot.data!.docs.length,
-            //           );
-            //   },
-            // )
-          ],
-        ),
+          ),
+        ],
       ),
+      body: ItemsAvatarCarousel(),
     );
   }
 }
