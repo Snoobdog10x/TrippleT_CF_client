@@ -34,7 +34,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               .collection("users")
               .doc(sharedPreferences!.getString("uid"))
               .collection("orders")
-              .where("status", isEqualTo: "normal")
+              // .where("status", isEqualTo: "normal")
               .orderBy("orderTime", descending: true)
               .snapshots(),
           builder: (c, snapshot) {
