@@ -1,6 +1,6 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=E:\Program file\flutter"
+export "FLUTTER_ROOT=C:\Users\duyth\fvm\versions\3.3.4"
 export "FLUTTER_APPLICATION_PATH=D:\study\UN_4th\E-commerce\mobile_client\TrippleT_CF_client"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib\main.dart"
