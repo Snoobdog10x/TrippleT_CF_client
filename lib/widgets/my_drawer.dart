@@ -3,10 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:users_food_app/authentication/login.dart';
 import 'package:users_food_app/global/global.dart';
 import 'package:users_food_app/screens/address_screen.dart';
-import 'package:users_food_app/screens/history_screen.dart';
 import 'package:users_food_app/screens/home_screen.dart';
 import 'package:users_food_app/screens/my_orders_screen.dart';
-import 'package:users_food_app/screens/search_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
@@ -131,56 +129,6 @@ class MyDrawer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (c) => MyOrdersScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const Divider(height: 10, color: Colors.white, thickness: 2),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.access_time,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'History',
-                      style: GoogleFonts.lato(
-                        textStyle: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => HistoryScreen()),
-                        ),
-                      );
-                    },
-                  ),
-                  const Divider(height: 10, color: Colors.white, thickness: 2),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.search,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'Search',
-                      style: GoogleFonts.lato(
-                        textStyle: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => SearchScreen()),
                         ),
                       );
                     },

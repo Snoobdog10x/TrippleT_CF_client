@@ -49,8 +49,8 @@ dependencies:
   google_fonts: ^3.0.1
   hexcolor: ^3.0.1
   lottie: ^1.2.2
-
-
+  im_stepper: ^1.0.1+1
+  auto_size_text: ^3.0.0
   image_picker: ^0.8.4+4
   geolocator: ^9.0.2
   geocoding: ^2.0.1

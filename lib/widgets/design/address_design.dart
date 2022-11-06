@@ -122,78 +122,7 @@ class _AddressDesignState extends State<AddressDesign> {
                                   ),
                                 ],
                               ),
-                              // TableRow(
-                              //   children: [
-                              //     Text(
-                              //       "Flat Number: ",
-                              //       style: GoogleFonts.lato(
-                              //         textStyle: const TextStyle(
-                              //           fontSize: 15,
-                              //           fontWeight: FontWeight.bold,
-                              //           color: Colors.black,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     Text(
-                              //       widget.model!.flatNumber.toString(),
-                              //       style: GoogleFonts.lato(
-                              //         textStyle: const TextStyle(
-                              //           fontSize: 15,
-                              //           fontWeight: FontWeight.normal,
-                              //           color: Colors.black,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
-                              // TableRow(
-                              //   children: [
-                              //     Text(
-                              //       "City: ",
-                              //       style: GoogleFonts.lato(
-                              //         textStyle: const TextStyle(
-                              //           fontSize: 15,
-                              //           fontWeight: FontWeight.bold,
-                              //           color: Colors.black,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     Text(
-                              //       widget.model!.city.toString(),
-                              //       style: GoogleFonts.lato(
-                              //         textStyle: const TextStyle(
-                              //           fontSize: 15,
-                              //           fontWeight: FontWeight.normal,
-                              //           color: Colors.black,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
-                              // TableRow(
-                              //   children: [
-                              //     Text(
-                              //       "State: ",
-                              //       style: GoogleFonts.lato(
-                              //         textStyle: const TextStyle(
-                              //           fontSize: 15,
-                              //           fontWeight: FontWeight.bold,
-                              //           color: Colors.black,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     Text(
-                              //       widget.model!.state.toString(),
-                              //       style: GoogleFonts.lato(
-                              //         textStyle: const TextStyle(
-                              //           fontSize: 15,
-                              //           fontWeight: FontWeight.normal,
-                              //           color: Colors.black,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
+
                               TableRow(
                                 children: [
                                   Text(
@@ -226,43 +155,6 @@ class _AddressDesignState extends State<AddressDesign> {
                 ),
 
                 //check on maps
-                ElevatedButton(
-                  onPressed: () {
-                    //check
-                    MapsUtils.openMapWithPosition(
-                        widget.model!.lat!, widget.model!.lng!);
-
-                    // MapsUtils.openMapWithAddress(
-                    //     widget.model!.fullAddress!);
-                  },
-                  child: const Text("Check on Maps"),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.amber,
-                  ),
-                ),
-                //button
-
-                widget.value == Provider.of<AddressChanger>(context).count
-                    ? ElevatedButton(
-                        onPressed: () {
-                          //check
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (c) => PlacedOrderScreen(
-                                addressID: widget.addressID,
-                                totalAmount: widget.totalAmount,
-                                sellerUID: widget.sellerUID,
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Text("Proceed"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                        ),
-                      )
-                    : Container()
               ],
             ),
           ),
