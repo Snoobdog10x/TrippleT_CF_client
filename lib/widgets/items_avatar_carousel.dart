@@ -152,10 +152,10 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
                       ),
                       Positioned(
                         top: 0,
-                        right: 24,
+                        right: 25,
                         child: Container(
-                          height: 20,
-                          width: 20,
+                          height: 25,
+                          width: 25,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.orange,
@@ -176,14 +176,26 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
                 ),
               ),
               Expanded(
-                  flex: 5,
-                  child: Container(
-                    child: Text(
-                      cost.toString(),
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                      textAlign: TextAlign.center,
+                flex: 5,
+                child: ListTile(
+                  title: Text(
+                    "Total",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.right,
+                  ),
+                  subtitle: Text(
+                    cost.toString(),
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 20,
                     ),
-                  )),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ),
               Expanded(
                 flex: 3,
                 child: Container(

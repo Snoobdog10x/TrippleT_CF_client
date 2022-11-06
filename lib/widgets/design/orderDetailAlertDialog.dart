@@ -49,7 +49,7 @@ class _orderDetailAlertDialogState extends State<orderDetailArlertDialog> {
       height: MediaQuery.of(context).size.height * 0.8,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("order ID: "),
+          title: Text("order ID: $orderId"),
         ),
         body: ListView(
           children: [

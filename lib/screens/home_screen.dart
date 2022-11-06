@@ -12,7 +12,6 @@ import 'package:users_food_app/widgets/design/bottom_cart_bar.dart';
 import '../authentication/login.dart';
 import '../models/sellers.dart';
 import '../widgets/seller_avatar_carousel.dart';
-import '../widgets/design/sellers_design.dart';
 import '../widgets/user_info.dart';
 
 class HomeScreen extends StatefulWidget {

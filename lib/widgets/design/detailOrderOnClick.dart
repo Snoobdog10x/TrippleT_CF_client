@@ -100,7 +100,7 @@ class _detailOrderOnClickState extends State<detailOrderOnClick> {
   Container itemsCard(
       String thumnailUrl, String itemName, String itemquantity) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.6,
+      width: MediaQuery.of(context).size.width * 0.4,
       child: Row(
         children: [
           Expanded(

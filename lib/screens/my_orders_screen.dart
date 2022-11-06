@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:users_food_app/assistantMethods/assistant_methods.dart';
 import 'package:users_food_app/global/global.dart';
 import 'package:users_food_app/widgets/design/orderDetailAlertDialog.dart';
-import 'package:users_food_app/widgets/design/order_card_design.dart';
 import 'package:users_food_app/widgets/progress_bar.dart';
 import 'package:users_food_app/widgets/simple_app_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -179,7 +178,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                       child: AutoSizeText(
                                         status,
                                         style: TextStyle(
-                                          fontSize: 20,
+                                          fontSize: 15,
                                         ),
                                       ),
                                       decoration: BoxDecoration(
