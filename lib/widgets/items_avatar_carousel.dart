@@ -7,6 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:users_food_app/screens/checkout.dart';
 import 'package:users_food_app/widgets/progress_bar.dart';
 import 'package:image_network/image_network.dart';
 import 'package:quantity_input/quantity_input.dart';
@@ -71,15 +72,13 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
                               }
                               setState(() {
                                 items_list.values.forEach((element) {
-                                  count += element["quan"]!;
+                                  count += 1;
                                 });
                                 cost = 0;
                                 items_list.values.forEach((element) {
                                   cost += element["quan"]! * element["price"]!;
                                 });
                               });
-                              print(cost);
-                              print(items_list.toString());
                             },
                             color: Colors.amberAccent,
                             icon: Icon(Icons.add_circle, size: 35),
@@ -194,7 +193,13 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
                       backgroundColor: Colors.orangeAccent,
                       padding: EdgeInsets.zero,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => checkout(items_list)),
+                      );
+                    },
                     child: const Text(
                       'Checkout',
                       style: TextStyle(
@@ -231,107 +236,122 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
 
   cart_content(List items) {
     if (!items.isEmpty) {
-      return Container(
-        child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection("items")
-              .where(
-                'itemID',
-                whereIn: items_list.keys.toList(),
-              )
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: circularProgress(),
-              );
-            }
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState1) {
-                return ListView(
-                  children:
-                      snapshot.data!.docs.map((DocumentSnapshot document) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.12,
-                      child: Card(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Image.network(document['thumbnailUrl']),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: ListTile(
-                                title: Text(document['title']),
-                                subtitle: Text(document['price']),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: IconButton(
-                                      onPressed: () {
-                                        var currentKey = document['itemID'];
-                                        var currentItem =
-                                            items_list[currentKey];
-                                        setState(() {
-                                          setState1(() {
-                                            if (currentItem!['quan'] == 1) {
-                                              items_list.remove(currentKey);
-                                            } else {
-                                              currentItem['quan'] =
-                                                  currentItem['quan']! - 1;
-                                            }
-                                            cost = cost - currentItem['price']!;
-                                            count = count - 1;
-                                          });
-                                        });
-                                      },
-                                      icon: Icon(Icons.remove),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Center(
-                                      child: Text(items_list[
-                                              document['itemID']]!['quan']
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: IconButton(
-                                      onPressed: () {
-                                        var currentKey = document['itemID'];
-                                        var currentItem =
-                                            items_list[currentKey];
-                                        setState(() {
-                                          setState1(() {
-                                            currentItem!['quan'] =
-                                                currentItem['quan']! + 1;
-                                            cost = cost + currentItem['price']!;
-                                            count = count + 1;
-                                          });
-                                        });
-                                      },
-                                      icon: Icon(Icons.add),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState1) {
+          try {
+            return Container(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("items")
+                    .where(
+                      'itemID',
+                      whereIn: items_list.keys.toList(),
+                    )
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: circularProgress(),
                     );
-                  }).toList(),
-                );
-              },
+                  }
+                  return ListView(
+                    children:
+                        snapshot.data!.docs.map((DocumentSnapshot document) {
+                      try {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.12,
+                          child: Card(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child:
+                                      Image.network(document['thumbnailUrl']),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: ListTile(
+                                    title: Text(document['title']),
+                                    subtitle: Text(document['price']),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: IconButton(
+                                          onPressed: () {
+                                            var currentKey = document['itemID'];
+                                            var currentItem =
+                                                items_list[currentKey];
+                                            setState(() {
+                                              setState1(() {
+                                                if (currentItem!['quan'] == 1) {
+                                                  items_list.remove(currentKey);
+                                                } else {
+                                                  currentItem['quan'] =
+                                                      currentItem['quan']! - 1;
+                                                }
+                                                cost = cost -
+                                                    currentItem['price']!;
+                                                count = count - 1;
+                                              });
+                                            });
+                                          },
+                                          icon: Icon(Icons.remove),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: Text(items_list[
+                                                  document['itemID']]!['quan']
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: IconButton(
+                                          onPressed: () {
+                                            var currentKey = document['itemID'];
+                                            var currentItem =
+                                                items_list[currentKey];
+                                            setState(() {
+                                              setState1(() {
+                                                currentItem!['quan'] =
+                                                    currentItem['quan']! + 1;
+                                                cost = cost +
+                                                    currentItem['price']!;
+                                                count = count + 1;
+                                              });
+                                            });
+                                          },
+                                          icon: Icon(Icons.add),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        return Container();
+                      }
+                    }).toList(),
+                  );
+                },
+              ),
             );
-          },
-        ),
+          } catch (e) {
+            return Container(
+              child: Center(
+                child: Text('Cart is empty'),
+              ),
+            );
+          }
+        },
       );
     }
     return Container(
