@@ -1,7 +1,12 @@
+// import 'dart:html';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:users_food_app/widgets/progress_bar.dart';
+import 'package:image_network/image_network.dart';
+import 'package:quantity_input/quantity_input.dart';
 
 class ItemsAvatarCarousel extends StatefulWidget {
   const ItemsAvatarCarousel({Key? key}) : super(key: key);
@@ -11,11 +16,13 @@ class ItemsAvatarCarousel extends StatefulWidget {
 }
 
 class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
+  int simpleIntInput = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
-      width: 200,
+      height: 900,
+      width: 600,
       child: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("items").snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -24,43 +31,33 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
               child: circularProgress(),
             );
           }
-          return CarouselSlider(
-            options: CarouselOptions(
-              height: MediaQuery.of(context).size.height * .1,
-              aspectRatio: 16 / 9,
-              viewportFraction: 0.8,
-              initialPage: 0,
-              enableInfiniteScroll: true,
-              reverse: false,
-              autoPlay: true,
-              autoPlayInterval: const Duration(seconds: 5),
-              autoPlayAnimationDuration: const Duration(milliseconds: 400),
-              autoPlayCurve: Curves.easeInCirc,
-              enlargeCenterPage: true,
-              scrollDirection: Axis.vertical,
-            ),
-            items: snapshot.data!.docs.map((document) {
+          return ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 1),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 1,
-                      offset: Offset(1, 3),
-                    )
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      document['thumbnailUrl'],
-                      fit: BoxFit.fill,
-                      height: 190,
-                    ),
+                height: MediaQuery.of(context).size.height * 0.12,
+                child: Card(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Image.network(document['thumbnailUrl']),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: ListTile(
+                          title: Text(document['title']),
+                          subtitle: Text(document['price']),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: IconButton(
+                          onPressed: () {},
+                          color: Colors.amberAccent,
+                          icon: Icon(Icons.add_circle, size: 35),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               );
