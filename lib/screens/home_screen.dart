@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: FlexibleSpaceBar(
                   title: Text(
-                    'Restaurants',
+                    'Menu',
                     style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                           fontSize: 15,
@@ -106,61 +106,65 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             //Carausel
-            SliverToBoxAdapter(
-              child: Container(
-                child: UserInformation(),
-              ),
-            ),
+            // SliverToBoxAdapter(
+            //   child: Container(
+            //     child: UserInformation(),
+            //   ),
+            // ),
 
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: SizedBox(
                   //taking %20 height for the device
-                  height: MediaQuery.of(context).size.height * .2,
+                  height: MediaQuery.of(context).size.height * 0.6,
                   //taking max width for the device
                   width: MediaQuery.of(context).size.width,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: const [
-                      SellerCarouselWidget(),
-                      ItemsAvatarCarousel(),
+                      Expanded(
+                        child: ItemsAvatarCarousel(),
+                      ),
+                      // Expanded(
+                      //   child: SellerCarouselWidget(),
+                      // )
                     ],
                   ),
                 ),
               ),
             ),
-            StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection("sellers").snapshots(),
-              builder: (context, snapshot) {
-                return !snapshot.hasData
-                    ? SliverToBoxAdapter(
-                        child: Center(
-                          child: circularProgress(),
-                        ),
-                      )
-                    : SliverStaggeredGrid.countBuilder(
-                        staggeredTileBuilder: (c) => const StaggeredTile.fit(1),
-                        crossAxisCount: 1,
-                        mainAxisSpacing: 1,
-                        crossAxisSpacing: 1,
-                        itemBuilder: (context, index) {
-                          Sellers smodel = Sellers.fromJson(
-                              snapshot.data!.docs[index].data()!
-                                  as Map<String, dynamic>);
-                          return Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: SellersDesignWidget(
-                              model: smodel,
-                              context: context,
-                            ),
-                          );
-                        },
-                        itemCount: snapshot.data!.docs.length,
-                      );
-              },
-            )
+            // StreamBuilder<QuerySnapshot>(
+            //   stream:
+            //       FirebaseFirestore.instance.collection("sellers").snapshots(),
+            //   builder: (context, snapshot) {
+            //     return !snapshot.hasData
+            //         ? SliverToBoxAdapter(
+            //             child: Center(
+            //               child: circularProgress(),
+            //             ),
+            //           )
+            //         : SliverStaggeredGrid.countBuilder(
+            //             staggeredTileBuilder: (c) => const StaggeredTile.fit(1),
+            //             crossAxisCount: 1,
+            //             mainAxisSpacing: 1,
+            //             crossAxisSpacing: 1,
+            //             itemBuilder: (context, index) {
+            //               Sellers smodel = Sellers.fromJson(
+            //                   snapshot.data!.docs[index].data()!
+            //                       as Map<String, dynamic>);
+            //               return Padding(
+            //                 padding: const EdgeInsets.all(8),
+            //                 child: SellersDesignWidget(
+            //                   model: smodel,
+            //                   context: context,
+            //                 ),
+            //               );
+            //             },
+            //             itemCount: snapshot.data!.docs.length,
+            //           );
+            //   },
+            // )
           ],
         ),
       ),

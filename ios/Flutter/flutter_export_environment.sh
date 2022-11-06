@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=E:\Program file\flutter"
-export "FLUTTER_APPLICATION_PATH=C:\Users\duyth\Downloads\BringApp-Delivery-service-app-main\BringApp-Delivery-service-app-main\users_food_app"
+export "FLUTTER_ROOT=C:\flutter"
+export "FLUTTER_APPLICATION_PATH=D:\e-commerce\TrippleT_CF_client"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
