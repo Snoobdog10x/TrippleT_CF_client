@@ -71,9 +71,7 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
                                         1;
                               }
                               setState(() {
-                                items_list.values.forEach((element) {
-                                  count += 1;
-                                });
+                                count += 1;
                                 cost = 0;
                                 items_list.values.forEach((element) {
                                   cost += element["quan"]! * element["price"]!;
