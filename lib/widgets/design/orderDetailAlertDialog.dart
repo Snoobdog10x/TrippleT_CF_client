@@ -25,13 +25,13 @@ class _orderDetailAlertDialogState extends State<orderDetailArlertDialog> {
   String userId;
   String addressId;
   List<String> stepTitles = [
-    'Ordering',
+    'Order',
     'Cooking',
     'Shipping',
     'Delivered',
   ];
   getCurrentStepIndex(currentStepText) {
-    if (currentStepText == "Ordering") return 0;
+    if (currentStepText == "Order") return 0;
     if (currentStepText == "Cooking") return 1;
     if (currentStepText == "Shipping") return 2;
     if (currentStepText == "Delivered") return 3;
@@ -75,7 +75,9 @@ class _orderDetailAlertDialogState extends State<orderDetailArlertDialog> {
           child: Center(
             child: SizedBox(
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  
+                },
                 child: Text(
                   "Cancel order",
                   style: TextStyle(

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,8 @@ import 'package:users_food_app/maps/maps.dart';
 import 'package:users_food_app/models/address.dart';
 import 'package:users_food_app/screens/placed_order_screen.dart';
 
+import '../../global/global.dart';
+
 class AddressDesign extends StatefulWidget {
   final Address? model;
   final int? currentIndex;
@@ -13,7 +17,7 @@ class AddressDesign extends StatefulWidget {
   final String? addressID;
   final double? totalAmount;
   final String? sellerUID;
-
+  final bool? isDefault;
   AddressDesign({
     this.model,
     this.currentIndex,
@@ -21,6 +25,7 @@ class AddressDesign extends StatefulWidget {
     this.addressID,
     this.totalAmount,
     this.sellerUID,
+    this.isDefault,
   });
 
   @override
@@ -61,9 +66,29 @@ class _AddressDesignState extends State<AddressDesign> {
                       value: widget.value!,
                       activeColor: Colors.green,
                       onChanged: (val) {
+                        FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(sharedPreferences!.getString("uid"))
+                            .collection("userAddress")
+                            .where("isDefault", isEqualTo: true)
+                            .get()
+                            .then(
+                          (value) {
+                            FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(sharedPreferences!.getString("uid"))
+                                .collection("userAddress")
+                                .doc(value.docs[0].id)
+                                .set(
+                              {"isDefault": false},
+                            ).then((value) {
+                              Provider.of<AddressChanger>(context,
+                                      listen: false)
+                                  .displayResult(val);
+                            });
+                          },
+                        );
                         //provider
-                        Provider.of<AddressChanger>(context, listen: false)
-                            .displayResult(val);
                       },
                     ),
                     Column(
@@ -122,7 +147,6 @@ class _AddressDesignState extends State<AddressDesign> {
                                   ),
                                 ],
                               ),
-
                               TableRow(
                                 children: [
                                   Text(

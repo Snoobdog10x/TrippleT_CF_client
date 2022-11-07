@@ -17,11 +17,8 @@ class MyOrdersScreen extends StatefulWidget {
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
   QuerySnapshot<Map<String, dynamic>>? orderData;
   List<Map<String, dynamic>> itemsByOrder = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    FirebaseFirestore.instance
+  Future<void> loadOrders() async {
+    await FirebaseFirestore.instance
         .collection("orders")
         .where("orderBy", isEqualTo: sharedPreferences!.getString("uid"))
         .get()
@@ -29,11 +26,11 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       (value) {
         List<Map<String, dynamic>> temp = [];
         value.docs.forEach(
-          (element) {
+          (element) async {
             List<dynamic> productIds = element.get("productIDs");
             List<String> ids = separateOrderItemIDs(productIds);
             List<String> quantities = separateOrderItemQuantities(productIds);
-            FirebaseFirestore.instance
+            await FirebaseFirestore.instance
                 .collection("items")
                 .where("itemID", whereIn: ids)
                 // .where("sellerUID",
@@ -48,7 +45,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
             });
           },
         );
-
         setState(
           () {
             itemsByOrder = temp;
@@ -60,6 +56,13 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadOrders().then((value) => null);
   }
 
   separateOrderItemIDs(orderIDs) {
@@ -115,6 +118,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     });
     return itemSum + shippingFee + total;
   }
+  // why use freshNumbers var? https://stackoverflow.com/a/52992836/2301224
 
   @override
   Widget build(BuildContext context) {
@@ -136,88 +140,87 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                 ],
               ),
             ),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: orderData!.docs.length,
-              itemBuilder: (BuildContext context, int index) {
-                String userId = orderData!.docs[index].get("orderBy");
-                String addressId = orderData!.docs[index].get("addressID");
-                String status = orderData!.docs[index].get("status");
-                String orderId = orderData!.docs[index].get("orderId");
-                var timeStamp = orderData!.docs[index].get("orderTime");
-                var date = new DateTime.fromMicrosecondsSinceEpoch(
-                    int.parse(timeStamp) * 1000);
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.14,
-                  child: Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(6.0),
-                      child: InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) => Center(
-                              child: orderDetailArlertDialog(
-                                  status, orderId, userId, addressId),
-                            ),
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      child: AutoSizeText(
-                                        status,
-                                        style: TextStyle(
-                                          fontSize: 15,
+            child: RefreshIndicator(
+              onRefresh: loadOrders,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: orderData!.docs.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String userId = orderData!.docs[index].get("orderBy");
+                  String addressId = orderData!.docs[index].get("addressID");
+                  String status = orderData!.docs[index].get("status");
+                  String orderId = orderData!.docs[index].get("orderId");
+                  var timeStamp = orderData!.docs[index].get("orderTime");
+                  var date = new DateTime.fromMicrosecondsSinceEpoch(
+                      int.parse(timeStamp) * 1000);
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.14,
+                    child: Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) => Center(
+                                child: orderDetailArlertDialog(
+                                    status, orderId, userId, addressId),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
+                                        child: AutoSizeText(
+                                          status,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.amber,
                                         ),
                                       ),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.amber,
-                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 7,
-                              child: ListTile(
-                                title: AutoSizeText("Order Id: " + orderId),
-                                subtitle: AutoSizeText(
-                                    "Order date: " + date.toString()),
+                              Expanded(
+                                flex: 7,
+                                child: ListTile(
+                                  title: AutoSizeText("Order Id: " + orderId),
+                                  subtitle: AutoSizeText(
+                                      "Order date: " + date.toString()),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: ListTile(
-                                title: Text("Total"),
-                                subtitle: Text(calculateTotal(
-                                        (itemsByOrder[index]['items']
-                                                as QuerySnapshot<
-                                                    Map<String, dynamic>>)
-                                            .docs,
-                                        itemsByOrder[index]['quantities'])
-                                    .toString()),
-                              ),
-                            )
-                          ],
+                              Expanded(
+                                flex: 4,
+                                child: ListTile(
+                                  title: Text("Total"),
+                                  subtitle: Text(
+                                      "${calculateTotal((itemsByOrder[index]['items'] as QuerySnapshot<Map<String, dynamic>>).docs, itemsByOrder[index]['quantities']).toString()} đ"),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         );
