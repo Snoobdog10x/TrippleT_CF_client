@@ -305,7 +305,7 @@ class _checkoutState extends State<checkout> {
   addOrderDetails() {
     writeOrderDetails({
       "addressID": getAdressId(),
-      "totalAmount": calculateTotal(),
+      "totalAmount": calculateTotal().toString(),
       "orderBy": sharedPreferences!.getString("uid"),
       "productIDs": getCartToString(),
       "paymentDetails": "Cash on Delivery",
