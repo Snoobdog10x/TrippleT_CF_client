@@ -97,153 +97,69 @@ class _detailOrderOnClickState extends State<detailOrderOnClick> {
     return separateItemQuantityList;
   }
 
-  Container itemsCard(
-      String thumnailUrl, String itemName, String itemquantity) {
+  itemsList() {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Image.network(thumnailUrl),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            //                   <--- left side
+            color: Colors.black,
+            width: 1.0,
           ),
-          Expanded(
-            flex: 9,
-            child: ListTile(
-              title: Text(
-                itemName,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              subtitle: Text("x" + itemquantity,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontStyle: FontStyle.italic,
-                  )),
-              isThreeLine: true,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+          bottom: BorderSide(
 
-  List<DataRow> showItemData() {
-    List<DataRow> datarow = [];
-    var itemSum = 0;
-    var shippingFee = 19000;
-    var total = 0;
-    allItem.forEach((element) {
-      itemSum += int.parse(element.get('price')) *
-          int.parse(quantities![allItem.indexOf(element)]);
-      datarow.add(
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              itemsCard(
-                element.get("thumbnailUrl"),
-                element.get("title"),
-                quantities![allItem.indexOf(element)],
-              ),
-            ),
-            DataCell(
-              Text(
-                element.get("price"),
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-          ],
+            color: Colors.black,
+            width: 1.0,
+          ),
         ),
-      );
-    });
-    total = shippingFee + itemSum;
-    datarow.add(
-      DataRow(
-        cells: <DataCell>[
-          const DataCell(
-            Text("Items's sum:"),
-          ),
-          DataCell(
-            Text(itemSum.toString()),
-          ),
-        ],
+      ),
+      height: MediaQuery.of(context).size.height * 0.25,
+      child: ListView.builder(
+        itemCount: allItem.length,
+        itemBuilder: (BuildContext context, int index) {
+          var itemImg = allItem[index].get("thumbnailUrl");
+          var title = allItem[index].get("title");
+          var price = allItem[index].get("price");
+          var quantity = quantities![index];
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.25,
+            child: Card(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Image.network(itemImg),
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: ListTile(
+                      title: Text(
+                        title,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      subtitle: Text(
+                        price,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      trailing: Text(
+                        "x$quantity",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
-    datarow.add(
-      DataRow(
-        cells: <DataCell>[
-          const DataCell(
-            Text('Delivery fee:'),
-          ),
-          DataCell(
-            Text(shippingFee.toString()),
-          ),
-        ],
-      ),
-    );
-    datarow.add(
-      DataRow(
-        cells: <DataCell>[
-          const DataCell(
-            Text('Total:'),
-          ),
-          DataCell(
-            Text(total.toString()),
-          ),
-        ],
-      ),
-    );
-    return datarow;
-  }
-
-  Color _getDataRowColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    //return Colors.green; // Use the default value.
-    return Colors.transparent;
   }
 
   @override
   Widget build(BuildContext context) {
     if (!allItem.isEmpty) {
-      return Container(
-        child: DataTable(
-          dataRowColor: MaterialStateProperty.resolveWith(_getDataRowColor),
-          columns: const <DataColumn>[
-            DataColumn(
-              label: Text(
-                'Item',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Price',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-          ],
-          rows: showItemData(),
-        ),
-      );
+      return itemsList();
     }
     return circularProgress();
   }

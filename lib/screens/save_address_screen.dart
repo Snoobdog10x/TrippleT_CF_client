@@ -23,10 +23,10 @@ class SaveAddressScreen extends StatelessWidget {
   getUserLocationAddress() async {
     //get current location
     bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-    
+
     await Geolocator.checkPermission();
     await Geolocator.requestPermission();
-    
+
     Position newPosition = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -74,8 +74,8 @@ class SaveAddressScreen extends StatelessWidget {
               city: _city.text.trim(),
               lat: position!.latitude,
               lng: position!.longitude,
+              isDefault: false,
             ).toJson();
-
             FirebaseFirestore.instance
                 .collection("users")
                 .doc(sharedPreferences!.getString("uid"))
@@ -84,8 +84,8 @@ class SaveAddressScreen extends StatelessWidget {
                 .set(model)
                 .then((value) {
               Fluttertoast.showToast(msg: "New Address has been saved.");
-
               formKey.currentState!.reset();
+              Navigator.pop(context);
             });
           }
         },

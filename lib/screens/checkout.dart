@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:users_food_app/global/global.dart';
+import 'package:users_food_app/screens/address_screen.dart';
 import 'package:users_food_app/widgets/progress_bar.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'home_screen.dart';
 
 class checkout extends StatefulWidget {
@@ -24,7 +25,8 @@ class _checkoutState extends State<checkout> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var temp = FirebaseFirestore.instance
+    QuerySnapshot<Map<String, dynamic>>? temp;
+    FirebaseFirestore.instance
         .collection("users")
         .doc(sharedPreferences!.getString("uid"))
         .collection("userAddress")
@@ -33,56 +35,64 @@ class _checkoutState extends State<checkout> {
       setState(() {
         userAdress = value;
       });
-    });
+    }).catchError((onError) {});
   }
 
   addressChooser() {
-    var choice_address = userAdress!.docs.toList()[choice_Adress].data();
-    String addressString =
-        "${sharedPreferences!.getString("name")!} | ${choice_address["phoneNumber"]}\n${choice_address["fullAddress"]}";
-
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.18,
-      child: InkWell(
-        onTap: () {},
-        child: Row(
-          children: [
-            Expanded(
-              flex: 9,
-              child: ListTile(
-                leading: Icon(Icons.location_on),
-                title: Text(
-                  "Your delivery address",
-                  style: TextStyle(fontSize: 20),
-                ),
-                subtitle: Text(
-                  addressString,
-                  style: TextStyle(
-                    fontSize: 18,
+    try {
+      var choice_address = userAdress!.docs.toList()[choice_Adress].data();
+      String addressString =
+          "${sharedPreferences!.getString("name")!} | ${choice_address["phoneNumber"]}\n${choice_address["fullAddress"]}";
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.18,
+        child: InkWell(
+          onTap: () {},
+          child: Row(
+            children: [
+              Expanded(
+                flex: 9,
+                child: ListTile(
+                  leading: Icon(Icons.location_on),
+                  title: Text(
+                    "Your delivery address",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  subtitle: Text(
+                    addressString,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Icon(Icons.arrow_forward_ios),
-            ),
-          ],
-        ),
-      ),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Colors.black,
-            width: 1.0,
-          ),
-          bottom: BorderSide(
-            color: Colors.black,
-            width: 3.0,
+              Expanded(
+                flex: 1,
+                child: Icon(Icons.arrow_forward_ios),
+              ),
+            ],
           ),
         ),
-      ),
-    );
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.black,
+              width: 1.0,
+            ),
+            bottom: BorderSide(
+              color: Colors.black,
+              width: 3.0,
+            ),
+          ),
+        ),
+      );
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Add new address befor checkout");
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => AddressScreen()));
+      });
+      return circularProgress();
+    }
   }
 
   itemsList() {
@@ -175,7 +185,7 @@ class _checkoutState extends State<checkout> {
                         ),
                       ),
                       trailing: Text(
-                        "19000",
+                        "19000 đ",
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -329,56 +339,7 @@ class _checkoutState extends State<checkout> {
 
   @override
   Widget build(BuildContext context) {
-    if (items_list.isEmpty)
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Checkout"),
-        ),
-        body: Center(
-          child: Text("Cart is empty"),
-        ),
-        bottomNavigationBar: Container(
-          height: MediaQuery.of(context).size.height * 0.08,
-          color: Colors.white,
-          child: InkWell(
-            onTap: () {},
-            child: Row(
-              children: [
-                Expanded(
-                    flex: 5,
-                    child: Container(
-                      child: Text(
-                        "",
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                    )),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: double.infinity,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.orangeAccent,
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () {},
-                      child: const Text(
-                        'Order',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    if (userAdress != null)
+    if (items_list.isNotEmpty && userAdress != null) {
       return Scaffold(
         appBar: AppBar(
           title: Text("Checkout"),
@@ -434,6 +395,58 @@ class _checkoutState extends State<checkout> {
           ),
         ),
       );
+    }
+    if (items_list.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Checkout"),
+        ),
+        body: Center(
+          child: Text("Cart is empty"),
+        ),
+        bottomNavigationBar: Container(
+          height: MediaQuery.of(context).size.height * 0.08,
+          color: Colors.white,
+          child: InkWell(
+            onTap: () {},
+            child: Row(
+              children: [
+                Expanded(
+                    flex: 5,
+                    child: Container(
+                      child: Text(
+                        "",
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                    )),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    height: double.infinity,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.orangeAccent,
+                        padding: EdgeInsets.zero,
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Order',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Checkout"),

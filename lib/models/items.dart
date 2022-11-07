@@ -11,7 +11,7 @@ class Items {
   String? longDescription;
   String? status;
   int? price;
-
+  String? catalogId;
   Items({
     this.itemID,
     this.longDescription,
@@ -23,6 +23,7 @@ class Items {
     this.status,
     this.thumbnailUrl,
     this.title,
+    this.catalogId,
   });
 
   Items.fromJson(Map<String, dynamic> json) {
@@ -36,6 +37,7 @@ class Items {
     longDescription = json["longDescription"];
     status = json["status"];
     price = json["price"];
+    catalogId = json["catalogId"];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,7 +52,7 @@ class Items {
     data["longDescription"] = longDescription;
     data["status"] = status;
     data["price"] = price;
-
+    data["catalogId"] = catalogId;
     return data;
   }
 }

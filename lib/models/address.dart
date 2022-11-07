@@ -7,7 +7,7 @@ class Address {
   String? fullAddress;
   double? lat;
   double? lng;
-
+  bool? isDefault;
   Address({
     this.name,
     this.phoneNumber,
@@ -17,6 +17,7 @@ class Address {
     this.fullAddress,
     this.lat,
     this.lng,
+    this.isDefault,
   });
 
   Address.fromJson(Map<String, dynamic> json) {
@@ -28,6 +29,7 @@ class Address {
     fullAddress = json['fullAddress'];
     lat = json['lat'];
     lng = json['lng'];
+    isDefault = json['isDefault'];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,7 +42,7 @@ class Address {
     data['fullAddress'] = fullAddress;
     data['lat'] = lat;
     data['lng'] = lng;
-
+    data['isDefault'] = isDefault;
     return data;
   }
 }

@@ -75,7 +75,9 @@ class _orderDetailAlertDialogState extends State<orderDetailArlertDialog> {
           child: Center(
             child: SizedBox(
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  
+                },
                 child: Text(
                   "Cancel order",
                   style: TextStyle(
