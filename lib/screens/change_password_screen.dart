@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:users_food_app/global/global.dart';
+
+import '../authentication/login.dart';
+import '../widgets/custom_text_field.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   @override
@@ -9,6 +14,9 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   var getUID = sharedPreferences!.getString('uid');
   var getName = sharedPreferences!.getString('name');
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController repeatNewPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,33 +71,48 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            buildListView('Password', '******'),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  CustomTextField(
+                    data: Icons.password,
+                    controller: newPasswordController,
+                    hintText: "New Password",
+                    isObsecre: true,
+                  ),
+                  CustomTextField(
+                    data: Icons.password,
+                    controller: repeatNewPasswordController,
+                    hintText: "Repeat New Password",
+                    isObsecre: true,
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 30),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 2,
-                        color: Colors.black,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 50),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20))),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
+                  padding: EdgeInsets.zero,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      var currentNPW = newPasswordController.text.trim();
+                      var currentRNPW = repeatNewPasswordController.text.trim();
+                      if (currentNPW == currentRNPW && currentNPW.length >= 8) {
+                        _changePassword(currentNPW);
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (c) => const LoginScreen(),
+                          ),
+                        );
+                      } else {
+                        Fluttertoast.showToast(msg: "Error changed password!");
+                      }
+                    },
                     child: Text(
                       'Save',
                       style: TextStyle(
@@ -99,10 +122,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orangeAccent,
-                        padding: EdgeInsets.symmetric(horizontal: 50),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20))),
+                      backgroundColor: Colors.orangeAccent,
+                      padding: EdgeInsets.symmetric(horizontal: 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
                   ),
                 )
               ],
@@ -113,10 +138,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  Widget buildListView(String labelText, String placeholder) {
-    return ListView(
-      padding: EdgeInsets.only(left: 10, bottom: 30, right: 10),
-      children: <Widget>[],
-    );
+  void _changePassword(String password) async {
+//Create an instance of the current user.
+    User user = await FirebaseAuth.instance.currentUser!;
+//Pass in the password to updatePassword.
+    user.updatePassword(password).then((_) {
+      Fluttertoast.showToast(msg: "Successfully changed password!");
+      // Alert show_hide
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: "Error changed password!" + error.toString());
+    });
   }
 }
