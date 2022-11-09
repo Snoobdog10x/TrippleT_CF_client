@@ -30,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmpasswordController = TextEditingController();
-
+  User? currentUser;
 //image picker
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
@@ -79,21 +79,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
               );
             },
           );
-
-          String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-          fStorage.Reference reference = fStorage.FirebaseStorage.instance
-              .ref()
-              .child("users")
-              .child(fileName);
-          fStorage.UploadTask uploadTask =
-              reference.putFile(File(imageXFile!.path));
-          fStorage.TaskSnapshot taskSnapshot =
-              await uploadTask.whenComplete(() {});
-          await taskSnapshot.ref.getDownloadURL().then((url) {
-            userImageUrl = url;
-
-            // save info to firestore
-            AuthenticateSellerAndSignUp();
+          AuthenticateSellerAndSignUp().then((value) async {
+            String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+            fStorage.Reference reference = fStorage.FirebaseStorage.instance
+                .ref()
+                .child("users/${currentUser!.uid}/")
+                .child(fileName);
+            fStorage.UploadTask uploadTask =
+                reference.putFile(File(imageXFile!.path));
+            fStorage.TaskSnapshot taskSnapshot =
+                await uploadTask.whenComplete(() {});
+            await taskSnapshot.ref.getDownloadURL().then((url) {
+              userImageUrl = url;
+              if (currentUser != null) {
+                saveDataToFirestore().then((value) {
+                  Navigator.pop(context);
+                  //send user to Home Screen
+                  Route newRoute =
+                      MaterialPageRoute(builder: (c) => HomeScreen());
+                  Navigator.pushReplacement(context, newRoute);
+                });
+              }
+            });
           });
         }
         //if there is empty place show this message
@@ -122,9 +129,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   // ignore: non_constant_identifier_names
-  void AuthenticateSellerAndSignUp() async {
-    User? currentUser;
-    await firebaseAuth
+  Future AuthenticateSellerAndSignUp() async {
+    firebaseAuth
         .createUserWithEmailAndPassword(
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
@@ -144,23 +150,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       },
     );
-
-    if (currentUser != null) {
-      saveDataToFirestore(currentUser!).then((value) {
-        Navigator.pop(context);
-        //send user to Home Screen
-        Route newRoute = MaterialPageRoute(builder: (c) => HomeScreen());
-        Navigator.pushReplacement(context, newRoute);
-      });
-    }
   }
 
 //saving seller information to firestore
-  Future saveDataToFirestore(User currentUser) async {
-    FirebaseFirestore.instance.collection("users").doc(currentUser.uid).set(
+  Future saveDataToFirestore() async {
+    FirebaseFirestore.instance.collection("users").doc(currentUser!.uid).set(
       {
-        "uid": currentUser.uid,
-        "email": currentUser.email,
+        "uid": currentUser!.uid,
+        "email": currentUser!.email,
         "name": nameController.text.trim(),
         "photoUrl": userImageUrl,
         "status": "approved",
@@ -168,10 +165,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
     // save data locally (to access data easly from phone storage)
     sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString("uid", currentUser.uid);
-    await sharedPreferences!.setString("email", currentUser.email.toString());
+    await sharedPreferences!.setString("uid", currentUser!.uid);
+    await sharedPreferences!.setString("email", currentUser!.email.toString());
     await sharedPreferences!.setString("name", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", userImageUrl); //empty cart list while registration
+    await sharedPreferences!.setString(
+        "photoUrl", userImageUrl); //empty cart list while registration
   }
 
   @override
