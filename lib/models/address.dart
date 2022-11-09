@@ -8,6 +8,8 @@ class Address {
   double? lat;
   double? lng;
   bool? isDefault;
+  String? _addressId;
+  bool? isActive;
   Address({
     this.name,
     this.phoneNumber,
@@ -18,7 +20,16 @@ class Address {
     this.lat,
     this.lng,
     this.isDefault,
+    this.isActive,
   });
+
+  setOrderId(String addressId) {
+    _addressId = addressId;
+  }
+
+  String getAddressId() {
+    return _addressId!;
+  }
 
   Address.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -30,6 +41,7 @@ class Address {
     lat = json['lat'];
     lng = json['lng'];
     isDefault = json['isDefault'];
+    isActive = json['isActive'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +55,7 @@ class Address {
     data['lat'] = lat;
     data['lng'] = lng;
     data['isDefault'] = isDefault;
+    data['isActive'] = isActive;
     return data;
   }
 }

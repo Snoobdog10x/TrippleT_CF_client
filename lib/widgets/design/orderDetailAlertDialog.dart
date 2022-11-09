@@ -6,43 +6,46 @@ import 'package:users_food_app/global/global.dart';
 import 'package:users_food_app/widgets/design/detailOrderOnClick.dart';
 import 'package:users_food_app/widgets/design/userGetData.dart';
 
+import '../../models/orders.dart';
+
 class orderDetailArlertDialog extends StatefulWidget {
-  String currentStepText;
-  String orderId;
-  String userId;
-  String addressId;
-  orderDetailArlertDialog(
-      this.currentStepText, this.orderId, this.userId, this.addressId)
-      : super();
+  Orders? order;
+  orderDetailArlertDialog(this.order) : super();
   @override
   State<StatefulWidget> createState() =>
-      _orderDetailAlertDialogState(currentStepText, orderId, userId, addressId);
+      _orderDetailAlertDialogState(this.order);
 }
 
 class _orderDetailAlertDialogState extends State<orderDetailArlertDialog> {
-  String currentStepText;
-  String orderId;
-  String userId;
-  String addressId;
+  Orders? order;
   List<String> stepTitles = [
     'Order',
     'Cooking',
     'Shipping',
     'Delivered',
   ];
-  getCurrentStepIndex(currentStepText) {
-    if (currentStepText == "Order") return 0;
-    if (currentStepText == "Cooking") return 1;
-    if (currentStepText == "Shipping") return 2;
-    if (currentStepText == "Delivered") return 3;
+  getCurrentStepIndex() {
+    var status = order!.status;
+    if (status == "Order") return 0;
+    if (status == "Cooking") return 1;
+    if (status == "Shipping") return 2;
+    if (status == "Delivered") return 3;
   }
-
+  
   List<Step> steps = [];
-  _orderDetailAlertDialogState(
-      this.currentStepText, this.orderId, this.userId, this.addressId);
+  _orderDetailAlertDialogState(this.order);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    String orderId = order!.orderId!;
+    String userId = order!.orderBy!;
+    String addressId = order!.addressID!;
     // TODO: implement build
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
@@ -61,7 +64,7 @@ class _orderDetailAlertDialogState extends State<orderDetailArlertDialog> {
                   Icon(Icons.delivery_dining),
                   Icon(Icons.check),
                 ],
-                activeStep: getCurrentStepIndex(currentStepText),
+                activeStep: getCurrentStepIndex(),
                 enableNextPreviousButtons: false,
                 enableStepTapping: false,
               ),
@@ -75,9 +78,7 @@ class _orderDetailAlertDialogState extends State<orderDetailArlertDialog> {
           child: Center(
             child: SizedBox(
               child: TextButton(
-                onPressed: () {
-                  
-                },
+                onPressed: () {},
                 child: Text(
                   "Cancel order",
                   style: TextStyle(
