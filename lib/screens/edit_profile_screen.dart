@@ -1,7 +1,8 @@
-import 'dart:core';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,6 +40,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     displayEmailController = TextEditingController(text: curUser!.email);
     // print(snapshot.data!.data());
   }
+
+  String userImageUrl = "";
 
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
@@ -270,6 +273,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     setState(() {
       imageXFile;
+    });
+  }
+
+  _uploadImage() async {
+    _getImage();
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    fStorage.Reference reference = fStorage.FirebaseStorage.instance
+        .ref()
+        .child("users/${sharedPreferences!.getString('uid')}/")
+        .child(fileName);
+    fStorage.UploadTask uploadTask = reference.putFile(File(imageXFile!.path));
+    fStorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+    await taskSnapshot.ref.getDownloadURL().then((url) {
+      userImageUrl = url;
     });
   }
 }

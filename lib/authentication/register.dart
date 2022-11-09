@@ -171,7 +171,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     await sharedPreferences!.setString("uid", currentUser.uid);
     await sharedPreferences!.setString("email", currentUser.email.toString());
     await sharedPreferences!.setString("name", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", userImageUrl); //empty cart list while registration
+    await sharedPreferences!.setString(
+        "photoUrl", userImageUrl); //empty cart list while registration
   }
 
   @override
@@ -247,24 +248,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   children: [
                     CustomTextField(
+                      isPaWField: false,
                       data: Icons.person,
                       controller: nameController,
                       hintText: "Name",
                       isObsecre: false,
                     ),
                     CustomTextField(
+                      isPaWField: false,
                       data: Icons.email,
                       controller: emailController,
                       hintText: "Email",
                       isObsecre: false,
                     ),
                     CustomTextField(
+                      isPaWField: true,
                       data: Icons.lock,
                       controller: passwordController,
                       hintText: "Password",
                       isObsecre: true,
                     ),
                     CustomTextField(
+                      isPaWField: true,
                       data: Icons.lock,
                       controller: confirmpasswordController,
                       hintText: "Confirm password",
