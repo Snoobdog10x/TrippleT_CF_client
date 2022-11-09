@@ -4,6 +4,8 @@ import 'package:users_food_app/authentication/login.dart';
 import 'package:users_food_app/global/global.dart';
 import 'package:users_food_app/screens/address_screen.dart';
 import 'package:users_food_app/screens/home_screen.dart';
+import 'package:users_food_app/screens/edit_profile_screen.dart';
+import 'package:users_food_app/screens/change_password_screen.dart';
 import 'package:users_food_app/screens/my_orders_screen.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -136,6 +138,31 @@ class MyDrawer extends StatelessWidget {
                   const Divider(height: 10, color: Colors.white, thickness: 2),
                   ListTile(
                     leading: const Icon(
+                      Icons.manage_accounts,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                    title: Text(
+                      'Edit Profile',
+                      style: GoogleFonts.lato(
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (c) => EditProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(height: 10, color: Colors.white, thickness: 2),
+                  ListTile(
+                    leading: const Icon(
                       Icons.add_location,
                       color: Colors.black,
                       size: 25,
@@ -154,6 +181,31 @@ class MyDrawer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: ((context) => AddressScreen()),
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(height: 10, color: Colors.white, thickness: 2),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.vpn_key,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                    title: Text(
+                      'Change Password',
+                      style: GoogleFonts.lato(
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => ChangePasswordScreen()),
                         ),
                       );
                     },
