@@ -340,7 +340,7 @@ class _checkoutState extends State<checkout> {
     return ship + items;
   }
 
-  addOrderDetails() {
+  Future addOrderDetails() async {
     var orderId = generateId();
     var data = Orders.fromJson({
       "addressID": getDefaultAddress()!.getAddressId(),
@@ -353,17 +353,8 @@ class _checkoutState extends State<checkout> {
       "status": "Order",
       "orderId": orderId,
     });
-    writeOrderDetails(data.toJson(), orderId).whenComplete(() {
-      setState(() {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(),
-          ),
-        );
-        Fluttertoast.showToast(msg: "Order has been placed.");
-      });
-    });
+
+    await writeOrderDetails(data.toJson(), orderId);
   }
 
   bool isEmtyCart() {
@@ -371,6 +362,17 @@ class _checkoutState extends State<checkout> {
     Map<String, dynamic> decodedMap = json.decode(encodedMap);
     if (decodedMap.isEmpty) return true;
     return false;
+  }
+
+  buildShowDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: circularProgress(),
+          );
+        });
   }
 
   @override
@@ -414,7 +416,21 @@ class _checkoutState extends State<checkout> {
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
-                        addOrderDetails();
+                        buildShowDialog(context);
+                        addOrderDetails().whenComplete(() {
+                          Navigator.pop(context);
+                          setState(() {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                            );
+                            Fluttertoast.showToast(
+                                msg: "Order has been placed.");
+                          });
+                        });
+                        ;
                       },
                       child: const Text(
                         'Order',
