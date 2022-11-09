@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:users_food_app/global/global.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
 import '../authentication/login.dart';
 import '../widgets/custom_text_field.dart';
@@ -17,6 +18,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController repeatNewPasswordController = TextEditingController();
+  TextEditingController currentPasswordController = TextEditingController();
+
+  bool isValidatePW = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +66,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               child: Container(
                 child: Center(
                   child: Text(
-                    'Hello ' + getName.toString() + ' !',
+                    'Hi ' + getName.toString() + ' !',
                     style: TextStyle(
                       fontSize: 30,
                     ),
@@ -77,6 +81,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 children: [
                   CustomTextField(
                     data: Icons.password,
+                    controller: currentPasswordController,
+                    hintText: "Current Password",
+                    isObsecre: true,
+                  ),
+                  CustomTextField(
+                    data: Icons.password,
                     controller: newPasswordController,
                     hintText: "New Password",
                     isObsecre: true,
@@ -86,6 +96,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     controller: repeatNewPasswordController,
                     hintText: "Repeat New Password",
                     isObsecre: true,
+                  ),
+                  FlutterPwValidator(
+                    controller: newPasswordController,
+                    minLength: 6,
+                    uppercaseCharCount: 1,
+                    numericCharCount: 3,
+                    width: 300,
+                    height: 100,
+                    onSuccess: () {
+                      isValidatePW = true;
+                    },
+                    onFail: () {
+                      isValidatePW = false;
+                    },
                   ),
                 ],
               ),
@@ -98,17 +122,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   padding: EdgeInsets.zero,
                   child: ElevatedButton(
                     onPressed: () {
+                      var currentPW = currentPasswordController.text.trim();
                       var currentNPW = newPasswordController.text.trim();
                       var currentRNPW = repeatNewPasswordController.text.trim();
-                      if (currentNPW == currentRNPW && currentNPW.length >= 8) {
-                        _changePassword(currentNPW);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (c) => const LoginScreen(),
-                          ),
-                        );
+                      if (currentNPW == currentRNPW && isValidatePW) {
+                        // Huythong1202
+                        _changePassword(currentPW, currentNPW).then((value) {
+                          if (value) {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (c) => const LoginScreen(),
+                              ),
+                            );
+                          }
+                        });
                       } else {
                         Fluttertoast.showToast(msg: "Error changed password!");
                       }
@@ -138,15 +167,32 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  void _changePassword(String password) async {
-//Create an instance of the current user.
-    User user = await FirebaseAuth.instance.currentUser!;
-//Pass in the password to updatePassword.
-    user.updatePassword(password).then((_) {
-      Fluttertoast.showToast(msg: "Successfully changed password!");
-      // Alert show_hide
-    }).catchError((error) {
-      Fluttertoast.showToast(msg: "Error changed password!" + error.toString());
+  Future<bool> _changePassword(
+      String currentPassword, String newPassword) async {
+    bool success = false;
+
+    //Create an instance of the current user.
+    var user = await FirebaseAuth.instance.currentUser!;
+    //Must re-authenticate user before updating the password. Otherwise it may fail or user get signed out.
+
+    final cred = await EmailAuthProvider.credential(
+        email: user.email!, password: currentPassword);
+    await user.reauthenticateWithCredential(cred).then((value) async {
+      await user.updatePassword(newPassword).then((_) {
+        success = true;
+      }).catchError((error) {
+        Fluttertoast.showToast(
+            msg: "Error changed password!" + error.toString());
+      });
+    }).catchError((err) {
+      Fluttertoast.showToast(msg: "Error changed password!" + err.toString());
     });
+
+    return success;
+  }
+
+  hello() {
+    String s = 'hello';
+    return s;
   }
 }
