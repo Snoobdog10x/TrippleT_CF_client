@@ -12,13 +12,7 @@ import '../global/global.dart';
 import '../models/address.dart';
 
 class AddressScreen extends StatefulWidget {
-  final double? totalAmount;
-  final String? sellerUID;
-
-  AddressScreen({
-    this.sellerUID,
-    this.totalAmount,
-  });
+  const AddressScreen({Key? key}) : super(key: key);
 
   @override
   State<AddressScreen> createState() => _AddressScreenState();
@@ -96,6 +90,7 @@ class _AddressScreenState extends State<AddressScreen> {
                         .collection("users")
                         .doc(sharedPreferences!.getString("uid"))
                         .collection("userAddress")
+                        .where("isActive", isEqualTo: true)
                         .snapshots(),
                     builder: (context, snapshot) {
                       return !snapshot.hasData
@@ -112,8 +107,6 @@ class _AddressScreenState extends State<AddressScreen> {
                                       currentIndex: address.count,
                                       value: index,
                                       addressID: snapshot.data!.docs[index].id,
-                                      totalAmount: widget.totalAmount,
-                                      sellerUID: widget.sellerUID,
                                       model: Address.fromJson(
                                           snapshot.data!.docs[index].data()!
                                               as Map<String, dynamic>),

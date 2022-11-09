@@ -8,6 +8,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:users_food_app/models/items.dart';
 import 'package:users_food_app/screens/checkout.dart';
 import 'package:users_food_app/widgets/progress_bar.dart';
@@ -15,6 +16,7 @@ import 'package:image_network/image_network.dart';
 import 'package:quantity_input/quantity_input.dart';
 
 import '../global/global.dart';
+import '../screens/address_screen.dart';
 
 class ItemsAvatarCarousel extends StatefulWidget {
   const ItemsAvatarCarousel({Key? key}) : super(key: key);
@@ -51,6 +53,11 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
     );
   }
 
+  generateId() {
+    String newUserId = DateTime.now().millisecondsSinceEpoch.toString();
+    return newUserId;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (items.isNotEmpty) {
@@ -60,10 +67,10 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
             itemCount: items.length,
             itemBuilder: (context, index) {
               var currentItems = items[index];
-              var thumnailUrl = items[index].thumbnailUrl;
-              var title = items[index].title;
-              var price = items[index].price;
-              var itemId = items[index].itemID;
+              var thumnailUrl = currentItems.thumbnailUrl;
+              var title = currentItems.title;
+              var price = currentItems.price;
+              var itemId = currentItems.itemID;
               return Container(
                 height: MediaQuery.of(context).size.height * 0.12,
                 child: Card(
@@ -225,18 +232,45 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
-                        Map<String, int> cartString = {};
-                        cart.forEach((key, value) {
-                          cartString[key.itemID!] = value;
-                        });
-                        String encodedMap = json.encode(cartString);
-                        sharedPreferences!
-                            .setString("userCart", encodedMap)
+                        FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(sharedPreferences!.getString("uid"))
+                            .collection("userAddress")
+                            .get()
                             .then((value) {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => checkout()),
-                          // );
+                          if (value.docs.isNotEmpty) {
+                            Map<String, int> cartString = {};
+                            if (cart.isNotEmpty)
+                              cart.forEach((key, value) {
+                                cartString[key.itemID!] = value;
+                              });
+                            String encodedMap = json.encode(cartString);
+                            sharedPreferences!
+                                .setString("userCart", encodedMap)
+                                .then((value) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => checkout()),
+                              );
+                            });
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddressScreen()),
+                            );
+                            Fluttertoast.showToast(
+                                msg: "Pick your address before checkout!");
+                          }
+                        }).catchError((onError) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddressScreen()),
+                          );
+                          Fluttertoast.showToast(
+                              msg: "Pick your address before checkout!");
                         });
                       },
                       child: const Text(
@@ -256,23 +290,6 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
       );
     }
     return circularProgress();
-  }
-
-  total_qty(Map<String, int> items_list) {
-    var values = items_list.values;
-    var result = values.reduce((sum, element) => sum + element);
-    return result;
-  }
-
-  total_price(Map<String, int> items_list) {
-    var keyMapItems = items_list.keys;
-    var valuesMapItems = items_list.values;
-    int result = 0;
-
-    for (String key in keyMapItems) {
-      print(key);
-    }
-    return result;
   }
 
   cart_content() {

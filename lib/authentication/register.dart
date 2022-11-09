@@ -164,18 +164,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         "name": nameController.text.trim(),
         "photoUrl": userImageUrl,
         "status": "approved",
-        "userCart": ['garbageValue'],
       },
     );
-
     // save data locally (to access data easly from phone storage)
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString("uid", currentUser.uid);
     await sharedPreferences!.setString("email", currentUser.email.toString());
     await sharedPreferences!.setString("name", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", userImageUrl);
-    await sharedPreferences!.setStringList(
-        "userCart", ['garbageValue']); //empty cart list while registration
+    await sharedPreferences!.setString("photoUrl", userImageUrl); //empty cart list while registration
   }
 
   @override
