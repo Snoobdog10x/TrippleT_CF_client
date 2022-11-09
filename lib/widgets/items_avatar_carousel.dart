@@ -1,5 +1,6 @@
 // import 'dart:html';
 
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:math';
 
@@ -12,6 +13,8 @@ import 'package:users_food_app/screens/checkout.dart';
 import 'package:users_food_app/widgets/progress_bar.dart';
 import 'package:image_network/image_network.dart';
 import 'package:quantity_input/quantity_input.dart';
+
+import '../global/global.dart';
 
 class ItemsAvatarCarousel extends StatefulWidget {
   const ItemsAvatarCarousel({Key? key}) : super(key: key);
@@ -222,11 +225,19 @@ class _ItemsAvatarCarouselState extends State<ItemsAvatarCarousel> {
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => checkout(cart)),
-                        // );
+                        Map<String, int> cartString = {};
+                        cart.forEach((key, value) {
+                          cartString[key.itemID!] = value;
+                        });
+                        String encodedMap = json.encode(cartString);
+                        sharedPreferences!
+                            .setString("userCart", encodedMap)
+                            .then((value) {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => checkout()),
+                          // );
+                        });
                       },
                       child: const Text(
                         'Checkout',
