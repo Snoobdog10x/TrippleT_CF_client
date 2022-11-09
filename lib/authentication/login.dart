@@ -108,8 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           } else {
             firebaseAuth.signOut();
-            Navigator.pop(context);
-            Fluttertoast.showToast(msg: "Your account has been blocked!");
+            Navigator.pop(context); // Back previous screen
+            Fluttertoast.showToast(msg: "Your account has been blocked!"); // Alert show_hide
           }
         }
         //if user is not a user
